@@ -87,3 +87,12 @@ void drawGauge(SDL_Renderer* renderer, Gauge* gauge) {
     // Version avec des vertex pour éviter les trous dans l'arc de cercle
     // TODO
 }
+
+/**
+ * @brief Permet de libérer la mémoire d'une jauge
+ * 
+ * @param gauge La jauge à détruire
+ */
+void destroyGauge(Gauge* gauge) {
+    free(gauge);
+}

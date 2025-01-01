@@ -23,7 +23,6 @@ void initPageVariateur(TTF_Font* font, Gauge** gauge, Graph** graph, float graph
     *gauge = createGauge(font, 0.1f, 0.0f, 50.0f, 250, 150, 180, 360, "Frequence [Hz]", 67, 204, 190, 255);
 
     // Graph
-    printf("Size: %d\n", size);
     *graph = createGraph(font, graphData, size, 400, 20, 800, 200, 67, 204, 190, 255, "Frequence [Hz]");
 }
 

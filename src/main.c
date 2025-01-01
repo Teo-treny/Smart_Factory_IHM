@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
         "I/O"
     };
 
-    NavBar* navbar = createNavBar(font, buttonLabels, 2     , 0, 0, NAVBAR_WIDTH, WINDOW_LENGTH);
+    NavBar* navbar = createNavBar(font, buttonLabels, 2, 0, 0, NAVBAR_WIDTH, WINDOW_LENGTH);
     if (!navbar) {
         printf("Erreur lors de la création de la barre de navigation\n");
         return 1;
