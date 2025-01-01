@@ -79,6 +79,14 @@ typedef struct {
     int x, y, w, h;
 } NavBar;
 
+// Indicator Light
+typedef struct {
+    TTF_Font* font;
+    char title[MAX_LABEL];
+    int x, y, w, h;
+    bool state;
+} IndicatorLight;
+
 /**
  * @brief Permet de créer une jauge
  * 
@@ -106,6 +114,13 @@ Gauge* createGauge(TTF_Font* font, float value, float min, float max, int x, int
  * @param gauge La jauge à dessiner
  */
 void drawGauge(SDL_Renderer* renderer, Gauge* gauge);
+
+/**
+ * @brief Permet de libérer la mémoire d'une jauge
+ * 
+ * @param gauge La jauge à détruire
+ */
+void destroyGauge(Gauge* gauge);
 
 /**
  * @brief Permet de créer une barre de navigation
@@ -228,5 +243,34 @@ void debugGraph(Graph* graph);
  * @param graph Le graphique à détruire
  */
 void destroyGraph(Graph* graph);
+
+/**
+ * @brief Create a Indicator Light object
+ * 
+ * @param x X position
+ * @param y Y position
+ * @param w Width
+ * @param h Height
+ * @param state True or False (base balue)
+ * @param title Title of the Indicator Light
+ * @param font Font
+ * @return IndicatorLight* 
+ */
+IndicatorLight * createIndicatorLight(int x, int y, int w, int h, bool state, const char* title, TTF_Font* font);
+
+/**
+ * @brief Draw a Indicator Light object
+ * 
+ * @param renderer renderer
+ * @param indicatorLight Indicator Light object to draw
+ */
+void drawIndicatorLight(SDL_Renderer* renderer, IndicatorLight* indicatorLight);
+
+/**
+ * @brief Destroy a Indicator Light object
+ * 
+ * @param indicatorLight Indicator Light object to destroy
+ */
+void destroyIndicatorLight(IndicatorLight* indicatorLight);
 
 #endif
