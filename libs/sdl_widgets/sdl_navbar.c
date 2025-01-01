@@ -37,8 +37,8 @@ NavBar* createNavBar(TTF_Font* font, char* buttonLabels[], int buttonCount, int 
 
     // Initialiser la barre de navigation
     navbar->font = font;
-    navbar->buttonCount = 0;
-    navbar->currentPage = PAGE_VARIATEUR;
+    navbar->buttonCount = buttonCount;
+    navbar->currentPage = 0;
     navbar->x = x;
     navbar->y = y;
     navbar->w = w;
@@ -52,18 +52,15 @@ NavBar* createNavBar(TTF_Font* font, char* buttonLabels[], int buttonCount, int 
     // Calculer la hauteur de chaque bouton
     int buttonHeight = h / buttonCount;
 
-    // Créer chaque bouton
+    // Initialiser chaque bouton sachant que le premier bouton est actif par défaut
+    // NavButton est un tableau dynamique
+    navbar->buttons = (NavButton*)malloc(buttonCount * sizeof(NavButton));
     for (int i = 0; i < buttonCount; i++) {
-        NavButton* button = &navbar->buttons[navbar->buttonCount++];
-        button->rect = (SDL_Rect){
-            x,                          // x
-            i * buttonHeight,          // y
-            navbar->w,                  // width
-            buttonHeight               // height
-        };
+        NavButton* button = &navbar->buttons[i];
         button->text = buttonLabels[i];
-        button->page = (PageType)i;
-        button->isActive = (i == 0);    // Premier bouton actif par défaut
+        button->page = i;
+        button->isActive = (i == 0);
+        button->rect = (SDL_Rect){x, y + i * buttonHeight, w, buttonHeight};
     }
 
     return navbar;
@@ -75,9 +72,8 @@ NavBar* createNavBar(TTF_Font* font, char* buttonLabels[], int buttonCount, int 
  * @param navbar 
  */
 void destroyNavBar(NavBar* navbar) {
-    if (navbar) {
-        free(navbar);
-    }
+    free(navbar->buttons);
+    free(navbar);
 }
 
 /**
@@ -93,8 +89,9 @@ void drawNavBar(SDL_Renderer* renderer, NavBar* navbar) {
     SDL_RenderFillRect(renderer, &navbarRect);
 
     // Dessiner chaque bouton
+    NavButton* button;
     for (int i = 0; i < navbar->buttonCount; i++) {
-        NavButton* button = &navbar->buttons[i];
+        button = &navbar->buttons[i];
         
         // Définir la couleur du bouton selon son état
         if (button->isActive) {
@@ -114,6 +111,7 @@ void drawNavBar(SDL_Renderer* renderer, NavBar* navbar) {
         // Dessiner le fond du bouton
         SDL_RenderFillRect(renderer, &button->rect);
 
+        // Dessiner le texte du bouton
         if (navbar->font) {
             SDL_Surface* textSurface = TTF_RenderText_Solid(navbar->font, 
             button->text, navbar->textColor);
@@ -143,9 +141,9 @@ void drawNavBar(SDL_Renderer* renderer, NavBar* navbar) {
  * @param navbar Structure NavBar
  * @param x position x du clic
  * @param y position y du clic
- * @return PageType Page a activer
+ * @return int Page a activer
  */
-PageType handleNavBarClick(NavBar* navbar, int x, int y) {
+int handleNavBarClick(NavBar* navbar, int x, int y) {
     if (x > NAVBAR_WIDTH) return navbar->currentPage;
 
     for (int i = 0; i < navbar->buttonCount; i++) {
@@ -162,9 +160,9 @@ PageType handleNavBarClick(NavBar* navbar, int x, int y) {
  * @brief Permet d'activer une page
  * 
  * @param navbar Barre de navigation
- * @param page Page à activer
+ * @param int Numéro de page à activer
  */
-void setActivePage(NavBar* navbar, PageType page) {
+void setActivePage(NavBar* navbar, int page) {
     navbar->currentPage = page;
     for (int i = 0; i < navbar->buttonCount; i++) {
         navbar->buttons[i].isActive = (navbar->buttons[i].page == page);

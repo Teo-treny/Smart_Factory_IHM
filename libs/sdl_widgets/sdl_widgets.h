@@ -26,14 +26,6 @@
 #define MAX_BUTTONS 5
 #define MAX_LABEL 255
 
-// Enums
-typedef enum {
-    PAGE_VARIATEUR,
-    PAGE_IO,
-    PAGE_MACHINES,
-    PAGE_TOTAL  // Utilisé pour compter le nombre total de pages
-} PageType;
-
 // Gauge
 typedef struct {
     TTF_Font* font;
@@ -72,14 +64,14 @@ typedef struct {
     SDL_Rect rect;
     const char* text;
     bool isActive;
-    PageType page;
+    int page;
 } NavButton;
 
 // NavBar
 typedef struct {
-    NavButton buttons[MAX_BUTTONS];
+    NavButton* buttons;
     int buttonCount;
-    PageType currentPage;
+    int currentPage;
     TTF_Font* font;
     SDL_Color activeColor;
     SDL_Color inactiveColor;
@@ -150,17 +142,17 @@ void drawNavBar(SDL_Renderer* renderer, NavBar* navbar);
  * @param navbar Structure NavBar
  * @param x position x du clic
  * @param y position y du clic
- * @return PageType Page a activer
+ * @return int Page a activer
  */
-PageType handleNavBarClick(NavBar* navbar, int x, int y);
+int handleNavBarClick(NavBar* navbar, int x, int y);
 
 /**
  * @brief Permet d'activer une page
  * 
  * @param navbar Barre de navigation
- * @param page Page à activer
+ * @param int Numéro de page à activer
  */
-void setActivePage(NavBar* navbar, PageType page);
+void setActivePage(NavBar* navbar, int page);
 
 /**
  * @brief Permet de créer une structure label

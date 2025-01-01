@@ -68,7 +68,6 @@ Graph* createGraph(TTF_Font* font, float* data, int dataSize, int x, int y, int 
 
     // Initialiser le graphique
     graph->font = font;
-    graph->data = data;
     graph->dataSize = dataSize;
     graph->x = x;
     graph->y = y;
@@ -81,6 +80,16 @@ Graph* createGraph(TTF_Font* font, float* data, int dataSize, int x, int y, int 
     graph->minData = 0;
     graph->maxData = findMax(data, dataSize);
     strcpy(graph->title, title);
+
+    // Copier le tableau data dans graph->data
+    graph->data = (float*)malloc(dataSize * sizeof(float));
+    if (!graph->data) {
+        free(graph);
+        return NULL;
+    }
+    for (int i = 0; i < dataSize; i++) {
+        graph->data[i] = data[i];
+    }
 
     return graph;
 }

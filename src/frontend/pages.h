@@ -11,13 +11,24 @@
 #include "../libs/sdl_widgets/sdl_widgets.h"
 
 /**
- * @brief Permet de dessiner la page du variateur
+ * @brief Initialise la page variateur
  * 
- * @param renderer SDL_Renderer
- * @param gauges Les jauges à dessiner
- * @param graphData Données des graphiques
+ * @param font 
+ * @param gauge 
+ * @param graph 
+ * @param graphData 
+ * @param size 
  */
-void page_variateur(SDL_Renderer* renderer, Gauge* gauges, float* graphData);
+void initPageVariateur(TTF_Font* font, Gauge** gauge, Graph** graph, float graphData[], int size);
+
+/**
+ * @brief Dessine la page variateur
+ * 
+ * @param renderer
+ * @param gauges 
+ * @param graphs 
+ */
+void drawPageVariateur(SDL_Renderer* renderer, Gauge* gauge, Graph* graph);
 
 /**
  * @brief Dessine la page des entrées sorties

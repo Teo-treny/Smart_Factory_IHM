@@ -5,7 +5,7 @@ LDFLAGS = -L./libs -lSDL2 -lSDL2_gfx -lSDL2_ttf -lm
 
 # ssh
 USER = pi
-IP = 192.168.26.49
+IP = 192.168.207.49
 
 # Chemins
 SRC_DIR = src

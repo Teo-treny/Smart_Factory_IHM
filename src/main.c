@@ -58,46 +58,39 @@ int main(int argc, char* argv[]) {
     }
 
     // Créer la barre de navigation
-    // boutons de la nav bar
     char* buttonLabels[] = {
         "Variateur",
-        "I/O",
-        "Machines"
+        "I/O"
     };
-    NavBar* navbar = createNavBar(font, buttonLabels, 3, 0, 0, NAVBAR_WIDTH, WINDOW_LENGTH);
+
+    NavBar* navbar = createNavBar(font, buttonLabels, 2     , 0, 0, NAVBAR_WIDTH, WINDOW_LENGTH);
     if (!navbar) {
         printf("Erreur lors de la création de la barre de navigation\n");
         return 1;
     }
 
+    // Flag de la boucle principale
     SDL_bool quit = SDL_FALSE;
-    
-    // Définition des jauges
-    Gauge* gauges[] = {
-        createGauge(font, 0.5f, 0.0f, 50.0f, 250, 150, 180, 360, "Frequence [Hz]", 167, 173, 217, 255),
-        createGauge(font, 0.3f, 0.0f, 10.0f, 250, 400, 180, 360, "Temperature", 167, 173, 217, 255),
-        createGauge(font, 0.7f, 0.0f, 10.0f, 250, 650, 180, 360, "Pression", 167, 173, 217, 255)
-    };
 
-    // Faux tableau de donnée
-    float graphData[] = {0.2f, 0.4f, 0.6f, 0.3f, 0.5f, 0.7f, 0.4f, 10.6f};
-    int size = sizeof(graphData) / sizeof(graphData[0]);
-    printf("Size: %d\n", size);
+    // Initialiser la page variateur
+    Gauge* gauge = NULL;
+    Graph* graph = NULL;
+    float graphData[] = {0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f};
+    initPageVariateur(font, &gauge, &graph, graphData, 11);
 
-    // Définition des graph
-    Graph* graph[] = {
-        createGraph(font, graphData, size, 400, 0, 600, 200, 167, 173, 217, 255, "Graphique 1")
-    };
-    debugGraph(graph[0]);
-
+    // Boucle principale
     while (!quit) {
+        // Gestion des événements
         SDL_Event event;
+        // Tant qu'il y a des événements à traiter
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
+                // Si l'utilisateur ferme la fenêtre
                 case SDL_QUIT:
                     quit = SDL_TRUE;
                     break;
                 
+                // Gestion des événements tactiles
                 case SDL_FINGERDOWN:
                     // Convertir l'événement tactile en événement de clic de souris
                     event.type = SDL_MOUSEBUTTONDOWN;
@@ -126,9 +119,7 @@ int main(int argc, char* argv[]) {
 
                 case SDL_MOUSEBUTTONDOWN:
                     if (event.button.button == SDL_BUTTON_LEFT) {
-                        PageType newPage = handleNavBarClick(navbar, 
-                            event.button.x, event.button.y);
-                        // Gérer le changement de page ici
+                        handleNavBarClick(navbar, event.button.x, event.button.y);
                     }
                     break;
             }
@@ -141,23 +132,13 @@ int main(int argc, char* argv[]) {
         // Dessiner la barre de navigation
         drawNavBar(renderer, navbar);
         
-        // Données exemple pour les graphiques
-        // float graphData[] = {0.2f, 0.4f, 0.6f, 0.3f, 0.5f, 0.7f, 0.4f, 0.6f};
-
         // Dessiner le contenu en fonction de la page active
         switch (navbar->currentPage) {
-            case PAGE_VARIATEUR:
-                // page_variateur(renderer, gauges, graphData);
-                drawGauge(renderer, gauges[0]);
-                drawGauge(renderer, gauges[1]);
-                drawGauge(renderer, gauges[2]);
-                drawGraph(renderer, graph[0]);
+            case 0:
+                drawPageVariateur(renderer, gauge, graph);
                 break;
             
-            case PAGE_IO:
-                break;
-            
-            case PAGE_MACHINES:
+            case 1:
                 break;
             
             default:
@@ -166,9 +147,6 @@ int main(int argc, char* argv[]) {
         }
         
         SDL_RenderPresent(renderer);
-
-        // Update des données (à l'avenir on fait ça dans une tâche séparée)
-        gauges[0]->value += 0.01f;
 
         // Attendre 32ms pour obtenir 60 FPS
         SDL_Delay(32);
@@ -184,7 +162,7 @@ int main(int argc, char* argv[]) {
     }
     
     // Nettoyage
-    //destroyNavBar(navbar);
+    destroyNavBar(navbar);
     TTF_CloseFont(font);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
